@@ -6,10 +6,11 @@ const { User, validate } = require("../models/user");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const users = await User.find().sort("-name");
-  if (!users) return res.status(400).send({ error: "No Users found" });
-  res.status(200).send(users);
+// get current user
+router.get("/me", async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  if (!user) return res.status(400).send("User not found");
+  res.status(200).send(user);
 });
 
 router.post("/", async (req, res) => {
